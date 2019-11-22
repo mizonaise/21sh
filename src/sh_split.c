@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/20 05:30:25 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/21 07:25:45 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/22 03:02:22 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ char	*sub_token(char **tmp, char *line)
 	}
 	if (!(*tmp = ft_strsub(line, 0, i)))
 		return (0);
-	if (line[i])
-		return (line + i + 1);
+	while (line[i] && check_space(line[i]))
+		i++;
 	return (line + i);
 }
 
@@ -104,19 +104,20 @@ t_tok	*split_tokens(char *line)
 			ft_memdel((void **)&tmp);
 		}
 	}
+
 	analy_toks(toks);
 	if (check_error(toks))
 		return (0);
 	return (toks);
 }
 
-char	*sub_line(char **tmp, char *line)
+char	*sub_line(char **tmp, char *line, char c)
 {
 	int	i;
 	int	q;
 
 	i = 0;
-	while (line[i] && line[i] != ';')
+	while (line[i] && line[i] != c)
 	{
 		if (line[i] == 34 || line[i] == 39)
 		{
@@ -161,10 +162,12 @@ int		split_lines(char *line, char **env)
 			line++;
 		if (*line)
 		{
-			if (!(line = sub_line(&tmp, line)))
+			if (!(line = sub_line(&tmp, line, ';')))
 				return (1);
-
-			cmd_line(tmp, env);
+			if (check_pipe(tmp))
+				split_pipe(tmp, env);
+			else
+				cmd_line(tmp, env);
 			ft_memdel((void **)&tmp);
 		}
 	}

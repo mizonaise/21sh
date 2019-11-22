@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/20 05:31:10 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/21 05:58:02 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/22 03:11:40 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,32 @@ typedef struct	s_cmdl
 {
 	int		rd;
 	t_fd	*lrd;
+	char	*excu;
 	char	**args;
 }				t_cmdl;
 
+typedef struct	s_pipe
+{
+	t_cmdl			*cmdl;
+	struct s_pipe	*next;
+}				t_pipe;
+
+int				split_pipe(char *tmp, char **env);
 int				split_lines(char *line, char **env);
+char			*sub_line(char **tmp, char *line, char c);
 int				analy_toks(t_tok *toks);
 int				check_error(t_tok *toks);
+t_tok			*split_tokens(char *line);
 t_cmdl			*save_to_excute(t_tok *toks);
 
 int				check_space(char c);
 int				check_spechar(char c);
+int				check_pipe(char *str);
 int				check_token(char *token);
 int				check_number(char *token);
 
 void			free_tab(char **tab);
+void			free_pipes(t_pipe *pip);
 void			free_tokens(t_tok *lst);
 void			free_cmdline(t_cmdl *cmdl);
 int				save_tokens(t_tok **tok, char *token, int id);

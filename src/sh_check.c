@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/20 05:47:31 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/20 07:31:39 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/22 01:01:32 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,19 @@ int		check_number(char *token)
 		i++;
 	}
 	return (0);
+}
+
+int		check_pipe(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '|')
+			return (1);
+		i++;
+	}
+	return (0);
+
 }

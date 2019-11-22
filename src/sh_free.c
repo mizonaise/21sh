@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 03:56:42 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/21 06:33:00 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/22 03:33:16 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,19 @@ void	free_tab(char **tab)
 	}
 }
 
+void	free_pipes(t_pipe *lst)
+{
+	t_pipe	*tmp;
+
+	while (lst)
+	{
+		tmp = lst->next;
+		free_cmdline(lst->cmdl);
+		ft_memdel((void **)&lst);
+		lst = tmp;
+	}
+}
+
 void	free_tokens(t_tok *lst)
 {
 	t_tok	*tmp;
@@ -40,15 +53,31 @@ void	free_tokens(t_tok *lst)
 
 void	free_cmdline(t_cmdl *cmdl)
 {
+	int		i;
+	t_fd	*lrd;
+
 	if (cmdl->rd)
 	{
-		if (cmdl->lrd->fir != 0 && cmdl->lrd->fir != 1 && cmdl->lrd->fir != 2)
-			close(cmdl->lrd->fir);
-		if (cmdl->lrd->sec != 0 && cmdl->lrd->sec != 1 && cmdl->lrd->sec != 2)
-			close(cmdl->lrd->sec);
-		ft_memdel((void**)&(cmdl->lrd));
+		while (cmdl->lrd)
+		{
+			lrd = cmdl->lrd->next;
+			if (cmdl->lrd->fir != 0 && cmdl->lrd->fir != 1 && cmdl->lrd->fir != 2)
+				close(cmdl->lrd->fir);
+			if (cmdl->lrd->sec != 0 && cmdl->lrd->sec != 1 && cmdl->lrd->sec != 2)
+				close(cmdl->lrd->sec);
+			ft_memdel((void**)&(cmdl->lrd));
+			cmdl->lrd = lrd;
+
+		}
 	}
+	if (cmdl->excu)
+		ft_memdel((void**)&(cmdl->excu));
 	if (cmdl->args)
-		free_tab(cmdl->args);
+	{
+		i = 0;
+		while (cmdl->args[i])
+			ft_memdel((void **)&(cmdl->args[i++]));
+		ft_memdel((void**)&(cmdl->args));
+	}
 	ft_memdel((void**)&cmdl);
 }

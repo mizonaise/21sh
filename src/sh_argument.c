@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 03:45:13 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/21 07:19:55 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/22 03:15:43 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,17 +54,14 @@ char	*check_path(char *str)
 int		add_args(t_cmdl *cmdl, t_tok *toks)
 {
 	int		i;
-	char	*tmp;
 
 	while (toks && toks->id != 0)
 		toks = toks->next;
-	if (!toks || !(tmp = check_path(toks->value)))
+	if (!toks || !(cmdl->excu = check_path(toks->value)))
 		return (1);
-	toks = toks->next;
 	if (!(cmdl->args = (char **)malloc(sizeof(char *) * (args_len(toks) + 1))))
 		return (1);
-	i = 1;
-	cmdl->args[0] = tmp;
+	i = 0;
 	while (toks)
 	{
 		if (toks->id == 0)

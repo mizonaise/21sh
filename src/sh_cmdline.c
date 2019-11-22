@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/20 22:49:23 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/22 00:07:45 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/22 03:13:41 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_cmdl	*init_cmdl(void)
 		return (0);
 	cmdl->rd = 0;
 	cmdl->lrd = 0;
+	cmdl->excu = 0;
 	cmdl->args = 0;
 	return (cmdl);
 }
