@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/22 00:50:25 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/23 17:11:22 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/24 11:06:31 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int		child_process(int inp, int out, t_pipe *pipes, char **env)
 				lrd->fir = inp;
 			if (lrd->sec == 0)
 				lrd->sec = inp;
-			if (lrd->sec == -1)
+			if (lrd->sec == -3)
 				close(lrd->fir);
 			else
 				dup2(lrd->sec, lrd->fir);
@@ -82,8 +82,6 @@ int		child_process(int inp, int out, t_pipe *pipes, char **env)
 		}
 	}
 	execve(pipes->cmdl->excu, pipes->cmdl->args, env);
-//	if (execute(pipes->cmdl, env))
-//		return (1);
 	return (0);
 }
 

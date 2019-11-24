@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/20 05:31:10 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/23 17:56:44 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/24 09:36:10 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ int				built_cd(char **args, t_env **env);
 char			*ft_getenv(t_env *env, char *name);
 
 int				isdir(char *path);
+char			*edit_line(char *tmp, t_env *env);
 
 int				ft_perror(char *s, char *str);
 
