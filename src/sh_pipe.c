@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/22 00:50:25 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/24 11:06:31 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/25 19:57:32 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,41 +50,6 @@ int		add_pipes(t_pipe **pipes, char *line, t_env *env)
 	return (0);
 }
 
-int		child_process(int inp, int out, t_pipe *pipes, char **env)
-{
-	t_fd	*lrd;
-
-	if (dup2(inp, 0) == -1)
-		return (ft_perror(0, "duplicate input failed"));
-	close(inp);
-	if (pipes->next)
-		if (dup2(out, 1) == -1)
-			return (ft_perror(0, "duplicate output failed"));
-	close(out);
-	if (pipes->cmdl->rd)
-	{
-		lrd = pipes->cmdl->lrd;
-		while (lrd)
-		{
-			if (lrd->fir == 1)
-				lrd->fir = out;
-			if (lrd->sec == 1)
-				lrd->sec = out;
-			if (lrd->fir == 0)
-				lrd->fir = inp;
-			if (lrd->sec == 0)
-				lrd->sec = inp;
-			if (lrd->sec == -3)
-				close(lrd->fir);
-			else
-				dup2(lrd->sec, lrd->fir);
-			lrd = lrd->next;
-		}
-	}
-	execve(pipes->cmdl->excu, pipes->cmdl->args, env);
-	return (0);
-}
-
 int		execut_built_pipe(int inp, int outp, t_pipe *pipes, t_env **env)
 {
 	int		in;
@@ -121,6 +86,33 @@ int		execut_built_pipe(int inp, int outp, t_pipe *pipes, t_env **env)
 	close(in);
 	close(out);
 	close(err);
+	return (0);
+}
+
+int		child_process(int inp, int out, t_pipe *pipes, char **env)
+{
+	t_fd	*lrd;
+
+	if (dup2(inp, 0) == -1)
+		return (ft_perror(0, "duplicate input failed"));
+	close(inp);
+	if (pipes->next)
+		if (dup2(out, 1) == -1)
+			return (ft_perror(0, "duplicate output failed"));
+	close(out);
+	if (pipes->cmdl->rd)
+	{
+		lrd = pipes->cmdl->lrd;
+		while (lrd)
+		{
+			if (lrd->sec == -3)
+				close(lrd->fir);
+			else
+				dup2(lrd->sec, lrd->fir);
+			lrd = lrd->next;
+		}
+	}
+	execve(pipes->cmdl->excu, pipes->cmdl->args, env);
 	return (0);
 }
 
