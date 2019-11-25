@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 01:21:51 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/24 12:21:28 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/25 21:56:25 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,13 @@ int		check_line(char *str)
 	return (0);
 }
 
-char	*prompt_21sh(void)
+char	*prompt_21sh(char *line)
 {
 	int		ret;
 	char	*tmp;
 	char	*temp;
-	char	*line;
 
-	line = readline("21sh >$ ");
+
 	ret = check_line(line);
 	while (ret > 0)
 	{
@@ -109,7 +108,9 @@ int		main(int ac, char **av, char **env)
 	my_env = creat_env(env);
 	while (1337)
 	{
-		if ((line = prompt_21sh()))
+		if (!(line = readline("21sh >$ ")))
+			break ;
+		if ((line = prompt_21sh(line)))
 		{
 			if (!ft_strcmp(line, "exit"))
 			{
