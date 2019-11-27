@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 03:44:00 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/24 11:14:16 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/27 19:05:13 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int		execute_cmdl(t_cmdl *cmdl, char **env)
 	t_fd	*lrd;
 
 	if ((pid = fork()) == -1)
-		return (ft_perror(0, "fork failed"));
+		return (ft_perror(0, "fork failed", 1));
 	if (pid == 0)
 	{
 		if (cmdl->rd)
@@ -35,7 +35,7 @@ int		execute_cmdl(t_cmdl *cmdl, char **env)
 			}
 		}
 		if (execve(cmdl->excu, cmdl->args, env) == -1)
-			return (ft_perror(0, "exceve failed"));
+			return (ft_perror(0, "exceve failed", 1));
 	}
 	if (pid > 0)
 		wait(&pid);
@@ -107,17 +107,23 @@ int		cmd_line(char *line, t_env **env)
 
 	if (!(toks = split_tokens(line)))
 		return (1);
+	if (analy_toks(toks) || check_error(toks))
+	{
+		free_tokens(toks);
+		return (1);
+	}
 	if (!(cmdl = save_to_excute(toks, *env)))
 	{
 		free_tokens(toks);
 		return (1);
 	}
-	if (execute(cmdl, env))
+	if (!ft_strcmp(cmdl->excu, "exit"))
 	{
 		free_cmdline(cmdl);
 		free_tokens(toks);
-		return (1);
+		return (-1);
 	}
+	execute(cmdl, env);
 	free_tokens(toks);
 	free_cmdline(cmdl);
 	return (0);

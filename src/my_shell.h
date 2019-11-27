@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   my_shell.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/20 05:31:10 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/24 09:36:10 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/27 14:40:09 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 # define MY_SHELL_H
 
 # include "../libft/libft.h"
+# include "../line_editing/line_editing.h"
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include <readline/readline.h>
-# include <readline/history.h>
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <dirent.h>
@@ -64,6 +63,13 @@ typedef struct	s_env
 	struct s_env	*next;
 }				t_env;
 
+typedef struct	s_file
+{
+	int	in;
+	int	out;
+	int	err;
+}				t_file;
+
 int				split_pipe(char *tmp, t_env **env);
 int				split_lines(char *line, t_env **env);
 char			*sub_line(char **tmp, char *line, char c);
@@ -82,6 +88,7 @@ int				check_number(char *token, int check);
 void			free_tab(char **tab);
 void			free_pipes(t_pipe *pip);
 void			free_tokens(t_tok *lst);
+void			free_environ(t_env *lst);
 void			free_cmdline(t_cmdl *cmdl);
 int				save_tokens(t_tok **tok, char *token, int id);
 
@@ -109,8 +116,8 @@ int				built_cd(char **args, t_env **env);
 char			*ft_getenv(t_env *env, char *name);
 
 int				isdir(char *path);
-char			*edit_line(char *tmp, t_env *env);
 
-int				ft_perror(char *s, char *str);
+int				ft_perror(char *s, char *str, int ret);
+char			*parse_line(char *tmp, t_env *env);
 
 #endif

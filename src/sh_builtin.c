@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/22 05:57:21 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/24 10:54:16 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/27 14:41:55 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int		ft_unsetenv(t_env **env, char **args)
 			del_elem(env, args[i++]);
 	}
 	else
-		ft_perror(0, "Too few arguments.");
+		ft_perror(0, "Too few arguments.", 1);
 	return (0);
 }
 
@@ -72,6 +72,8 @@ int		check_built(char *str)
 	if (!ft_strcmp(str, "env"))
 		return (1);
 	if (!ft_strcmp(str, "echo"))
+		return (1);
+	if (!ft_strcmp(str, "exit"))
 		return (1);
 	if (!ft_strcmp(str, "setenv"))
 		return (1);
@@ -95,18 +97,39 @@ int		execute_built(t_cmdl *cmdl, t_env **env)
 	return (0);
 }
 
+int		save_file(t_file **file, int in, int out, int err)
+{
+	if (!((*file) = (t_file *)malloc(sizeof(t_file))))
+		return (1);
+	(*file)->in = dup(in);
+	(*file)->out = dup(out);
+	(*file)->err = dup(err);
+	return (0);
+}
+
+void	free_file(t_file *file)
+{
+	if (file)
+	{
+		dup2(file->in, 0);
+		dup2(file->out, 1);
+		dup2(file->err, 2);
+		close(file->in);
+		close(file->out);
+		close(file->err);
+		ft_memdel((void **)&file);
+	}
+}
+
 int		built_cmd(t_cmdl *cmdl, t_env **env)
 {
-	int		in;
-	int		out;
-	int		err;
 	t_fd	*lrd;
+	t_file	*fil;
 
 	if (check_built(cmdl->excu))
 	{
-		in = dup(0);
-		out = dup(1);
-		err = dup(2);
+		if (save_file(&fil, 0, 1, 2))
+			exit(1);
 		if (cmdl->rd)
 		{
 			lrd = cmdl->lrd;
@@ -120,12 +143,7 @@ int		built_cmd(t_cmdl *cmdl, t_env **env)
 			}
 		}
 		execute_built(cmdl, env);
-		dup2(in, 0);
-		dup2(out, 1);
-		dup2(err, 2);
-		close(in);
-		close(out);
-		close(err);
+		free_file(fil);
 	}
 	else
 		return (1);

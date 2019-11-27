@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/22 00:50:25 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/25 21:50:45 by hastid           ###   ########.fr       */
+/*   Updated: 2019/11/27 19:11:02 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,30 @@ int		add_pipes(t_pipe **pipes, char *line, t_env *env)
 	t_cmdl	*cmdl;
 	t_pipe	*temp;
 
-	if (!(toks = split_tokens(line)))
-		return (1);
-	if (!(cmdl = save_to_excute(toks, env)))
-		return (1);
-	if (!(*pipes))
+	if ((toks = split_tokens(line)))
 	{
-		if (!(*pipes = add_pipe(cmdl)))
-			return (1);
-	}
-	else
-	{
-		temp = *pipes;
-		while (temp->next)
-			temp = temp->next;
-		if (!(temp->next = add_pipe(cmdl)))
+		if (analy_toks(toks) || check_error(toks))
+		{
+			free_tokens(toks);
+			return (0);
+		}
+		if ((cmdl = save_to_excute(toks, env)))
+		{
+			if (!(*pipes))
+			{
+				if (!(*pipes = add_pipe(cmdl)))
+					return (1);
+			}
+			else
+			{
+				temp = *pipes;
+				while (temp->next)
+					temp = temp->next;
+				if (!(temp->next = add_pipe(cmdl)))
+					return (1);
+			}
+		}
+		else
 			return (1);
 	}
 	free_tokens(toks);
@@ -62,11 +71,11 @@ int		execut_built_pipe(int inp, int outp, t_pipe *pipes, t_env **env)
 	out = dup(1);
 	err = dup(2);
 	if (dup2(inp, 0) == -1)
-		return (ft_perror(0, "duplicate input failed"));
+		return (ft_perror(0, "duplicate input failed", 1));
 	close(inp);
 	if (pipes->next)
 		if (dup2(outp, 1) == -1)
-			return (ft_perror(0, "duplicate output failed"));
+			return (ft_perror(0, "duplicate output failed", 1));
 	close(outp);
 	if (pipes->cmdl->rd)
 	{
@@ -97,11 +106,11 @@ int		child_process(int inp, int out, t_pipe *pipes, char **env, int p0)
 	if (!inp)
 		close(p0);
 	if (dup2(inp, 0) == -1)
-		return (ft_perror(0, "duplicate input failed"));
+		return (ft_perror(0, "duplicate input failed", 1));
 	close(inp);
 	if (pipes->next)
 		if (dup2(out, 1) == -1)
-			return (ft_perror(0, "duplicate output failed"));
+			return (ft_perror(0, "duplicate output failed", 1));
 	close(out);
 	if (pipes->cmdl->rd)
 	{
@@ -131,18 +140,19 @@ int		execute_pipe(t_pipe *pipes, t_env **env)
 	len = 0;
 	while (pipes)
 	{
-		if (pipes->next && pipe(pi) == -1)
-			return (ft_perror(0, "pipe failed"));
-		if (check_built(pipes->cmdl->excu))
+		if (ft_strcmp(pipes->cmdl->excu, "exit") && pipes->next && pipe(pi) == -1)
+			return (ft_perror(0, "pipe failed", 1));
+		if (check_built(pipes->cmdl->excu) && ft_strcmp(pipes->cmdl->excu, "exit"))
 			execut_built_pipe(inp, pi[1], pipes, env);
-		else
+		else if (ft_strcmp(pipes->cmdl->excu, "exit"))
 		{
 			my_env = list_to_tab(*env);
 			if ((pid = fork()) == -1)
-				return (ft_perror(0, "fork failed"));
+				return (ft_perror(0, "fork failed", 1));
 			if (pid == 0)
 				if (child_process(inp, pi[1], pipes, my_env, pi[0]))
 					return (1);
+			free_tab(my_env);
 		}
 		if (inp)
 			close(inp);
@@ -168,15 +178,20 @@ int		split_pipe(char *line, t_env **env)
 			line++;
 		if (*line)
 		{
-			if (!(line = sub_line(&tmp, line, '|')))
-				return (1);
-			if (add_pipes(&pipes, tmp, *env))
-				return (1);
-			ft_memdel((void **)&tmp);
+			line = sub_line(&tmp, line, '|');
+			if (tmp)
+			{
+				if (add_pipes(&pipes, tmp, *env))
+				{
+					ft_memdel((void **)&tmp);
+					free_pipes(pipes);
+					return (1);
+				}
+				ft_memdel((void **)&tmp);
+			}
 		}
 	}
-	if (execute_pipe(pipes, env))
-		return (1);
+	execute_pipe(pipes, env);
 	free_pipes(pipes);
 	return (0);
 }

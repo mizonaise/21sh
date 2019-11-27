@@ -3,101 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/19 01:21:51 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/25 21:56:25 by hastid           ###   ########.fr       */
+/*   Created: 2019/11/26 16:19:41 by hastid            #+#    #+#             */
+/*   Updated: 2019/11/27 18:59:07 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "my_shell.h"
 
-int		check_quotes(char *str, char c)
+void	kill_seg(int seg)
 {
-	int	i;
+	t_cmd	*l;
+	char	buf[2];
 
-	i = 0;
-	while (str[i])
-		if (str[i++] == c)
-			return (1);
-	return (0);
-}
-
-int		check_redirect(char *str)
-{
-	int		i;
-	char	*rd;
-
-	i = 0;
-	while (check_spechar(str[i]))
-		i++;
-	if (!str[i])
+	(void)seg;
+	l = NULL;
+	l = keep_l(l, 1);
+	if (l != NULL)
 	{
-		ft_putendl("21sh: syntax error near unexpected token");
-		return (1);
+		l->res = 0;
+		l->ctl_c = 1;
+		buf[0] = -62;
+		buf[1] = 0;
+		ioctl(0, TIOCSTI, buf);
 	}
-	rd = ft_strsub(str, 0, i);
-	if (!ft_strcmp(rd, ">") || !ft_strcmp(rd, ">>") || !ft_strcmp(rd, ">&"))
-		return (0);
-	if (!ft_strcmp(rd, "<") || !ft_strcmp(rd, "<<") || !ft_strcmp(rd, "<&"))
-		return (0);
-	if (!ft_strcmp(rd, "&>") || !ft_strcmp(rd, "&<"))
-		return (0);
-	ft_memdel((void **)&rd);
-	ft_putendl("21sh: syntax error near unexpected token");
-	return (1);
-}
-
-int		check_line(char *str)
-{
-	int	i;
-	int	be;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == 34 || str[i] == 39)
-		{
-			be = i++;
-			if (!check_quotes(str + i, str[be]))
-				return (1);
-			while (str[i] && str[i] != str[be])
-				i++;
-		}
-		if (str[i] == '|' && !str[i + 1])
-			return (1);
-		if (check_spechar(str[i]))
-			if (check_redirect(str + i))
-				return (-1);
-		i++;
-	}
-	return (0);
-}
-
-char	*prompt_21sh(char *line)
-{
-	int		ret;
-	char	*tmp;
-	char	*temp;
-
-
-	ret = check_line(line);
-	while (ret > 0)
-	{
-		tmp = line;
-		temp = readline("> ");
-		line = ft_strjoin(line, temp);
-		ft_memdel((void **)&tmp);
-		ft_memdel((void **)&temp);
-		ret = check_line(line);
-	}
-	add_history(line);
-	if (ret == -1)
-	{
-		ft_memdel((void **)&line);
-		return (0);
-	}
-	return (line);
+	ft_putchar('\n');
 }
 
 int		main(int ac, char **av, char **env)
@@ -105,21 +36,19 @@ int		main(int ac, char **av, char **env)
 	char	*line;
 	t_env	*my_env;
 
+	signal(SIGINT, kill_seg);
 	my_env = creat_env(env);
+	init_history();
 	while (1337)
 	{
-		if (!(line = readline("21sh >$ ")))
+		if (!(line = line_editing("21sh >$ ")))
 			break ;
-		if ((line = prompt_21sh(line)))
-		{
-			if (!ft_strcmp(line, "exit"))
-			{
-				ft_memdel((void **)&line);
-				break ;
-			}
-			split_lines(line, &my_env);
-			ft_memdel((void **)&line);
-		}
+		add_to_hist(ft_strdup(line));
+		if (split_lines(line, &my_env) == -1)
+			break ;
+		ft_memdel((void **)&line);
 	}
+	ft_memdel((void **)&line);
+	free_environ(my_env);
 	return (0);
 }
