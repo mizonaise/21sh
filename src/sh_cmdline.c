@@ -6,38 +6,13 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 16:20:06 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/27 18:59:56 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/01 04:12:12 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "my_shell.h"
 
-char	*add_to_file(char *file, char *s)
-{
-	char	*tmp1;
-	char	*tmp2;
-
-	if (!file || file[0] == '\0')
-	{
-		if (!s || s[0] == '\0')
-			return (ft_strdup("\n"));
-		return (ft_strjoin(s, "\n"));
-	}
-	if (!s || s[0] == '\0')
-	{
-		tmp1 = ft_strjoin(file, "\n");
-		ft_memdel((void **)&file);
-		return (tmp1);
-	}
-	if (!(tmp1 = ft_strjoin(s, "\n")))
-		return (0);
-	tmp2 = ft_strjoin(file, tmp1);
-	ft_memdel((void **)&file);
-	ft_memdel((void **)&tmp1);
-	return (tmp2);
-}
-
-int		heredirect(char *fin)
+static int	heredirect(char *fin)
 {
 	int		pi[2];
 	char	*s2;
@@ -64,7 +39,7 @@ int		heredirect(char *fin)
 	return (pi[0]);
 }
 
-int		ret_fildis(int rd, char *file, int n_id)
+static int	ret_fildis(int rd, char *file, int n_id)
 {
 	if ((rd == 6 || rd == 9) && n_id != 1)
 		return (!ft_strcmp(file, "-") ? -3 : ft_atoi(file));
@@ -79,7 +54,7 @@ int		ret_fildis(int rd, char *file, int n_id)
 	return (-1);
 }
 
-t_fd	*add_redirect(char *fd, int rd, char *file, int n_id)
+static t_fd	*add_redirect(char *fd, int rd, char *file, int n_id)
 {
 	t_fd	*lrd;
 
@@ -99,7 +74,7 @@ t_fd	*add_redirect(char *fd, int rd, char *file, int n_id)
 	return (lrd);
 }
 
-int		add_to_list(t_cmdl *cmdl, char *fd, int id, t_tok toks)
+static int	add_to_list(t_cmdl *cmdl, char *fd, int id, t_tok toks)
 {
 	t_fd	*lrd;
 
@@ -116,10 +91,9 @@ int		add_to_list(t_cmdl *cmdl, char *fd, int id, t_tok toks)
 	return (0);
 }
 
-int		add_redirections(t_cmdl *cmdl, t_tok *toks)
+int			add_redirections(t_cmdl *cmdl, t_tok *toks)
 {
 	char	*fd;
-	t_fd	*lrd;
 
 	fd = 0;
 	while (toks)
@@ -128,13 +102,13 @@ int		add_redirections(t_cmdl *cmdl, t_tok *toks)
 			fd = toks->value;
 		if (toks->id > 4 && toks->id < 13)
 		{
-			if (toks->id == 11 || toks->id == 12 || toks->id == 6
-					|| toks->id == 9)
+			if (toks->id == 11 || toks->id == 12 ||
+					((toks->id == 6 || toks->id == 9) && !fd))
 				fd = (toks->id == 11 || toks->id == 6) ? "1" : "0";
 			if (add_to_list(cmdl, fd, toks->id, *(toks->next)))
 				return (0);
-			if (toks->id == 11 || toks->id == 12 || toks->id == 6
-					|| toks->id == 9)
+			if (toks->id == 11 || toks->id == 12 ||
+					((toks->id == 6 || toks->id == 9) && !fd))
 				if (add_to_list(cmdl, "2", toks->id, *(toks->next)))
 					return (0);
 			fd = 0;

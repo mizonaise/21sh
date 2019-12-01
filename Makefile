@@ -6,7 +6,7 @@
 #    By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/13 18:30:14 by hastid            #+#    #+#              #
-#    Updated: 2019/11/26 05:14:49 by llachgar         ###   ########.fr        #
+#    Updated: 2019/12/01 04:05:01 by hastid           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,21 +23,28 @@ SRC = src/main.c \
 	  src/sh_token.c \
 	  src/sh_error.c \
 	  src/sh_envlist.c \
+	  src/sh_environ.c \
 	  src/sh_cmdline.c \
 	  src/sh_builtin.c \
 	  src/sh_execute.c \
+	  src/sh_expipes.c \
+	  src/sh_filedis.c \
+	  src/sh_buil_cd.c \
 	  src/sh_argument.c \
 	  src/sh_cmdledit.c \
-	  src/sh_buil_cd.c \
+	  src/sh_checkline.c \
+	  src/sh_checkerror.c \
 
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) libft_c lineediting
+	@gcc $(FLAG)  libft/libft.a line_editing/line_editing.a -ltermcap $(OBJ) -o $(NAME)
+libft_c:
 	@make -C libft
+lineediting:
 	@make -C line_editing
-	@gcc $(FLAG)  libft/libft.a line_editing/line_editing.a -ltermcap  $(OBJ) -o $(NAME)
 
 %.o: %.c
 	@gcc $(FLAC) -o $@ -c $<

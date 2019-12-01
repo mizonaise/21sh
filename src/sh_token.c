@@ -6,17 +6,17 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/20 06:13:50 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/27 16:08:03 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/01 05:25:13 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "my_shell.h"
 
-char	*del_quotes(char *str)
+static char	*del_quotes(char *str)
 {
 	int		i;
 	char	b;
-	char	buf[1337];
+	char	buf[65535];
 
 	i = 0;
 	if (!str)
@@ -30,13 +30,14 @@ char	*del_quotes(char *str)
 				buf[i++] = *str++;
 			str++;
 		}
-		buf[i++] = *str++;
+		else
+			buf[i++] = *str++;
 	}
 	buf[i] = '\0';
 	return (ft_strdup(buf));
 }
 
-int		edit_tokenid(char *token, int id)
+static int	edit_tokenid(char *token, int id)
 {
 	if (check_token(token))
 		return (4);
@@ -53,7 +54,7 @@ int		edit_tokenid(char *token, int id)
 	return (id);
 }
 
-int		edit_redirct(char *rd)
+static int	edit_redirct(char *rd)
 {
 	if (!ft_strcmp(rd, ">"))
 		return (5);
@@ -74,7 +75,7 @@ int		edit_redirct(char *rd)
 	return (1);
 }
 
-int		analy_toks(t_tok *toks)
+int			analy_toks(t_tok *toks)
 {
 	char	*tmp;
 	t_tok	*head;
@@ -97,4 +98,31 @@ int		analy_toks(t_tok *toks)
 		toks = toks->next;
 	}
 	return (0);
+}
+
+t_tok		*split_tokens(char *line)
+{
+	char	*tmp;
+	t_tok	*toks;
+
+	toks = 0;
+	while (*line)
+	{
+		while (*line && check_space(*line))
+			line++;
+		if (*line)
+		{
+			line = sub_token(&tmp, line);
+			if (tmp)
+			{
+				if (check_save(&toks, tmp))
+				{
+					ft_memdel((void **)&tmp);
+					return (0);
+				}
+				ft_memdel((void **)&tmp);
+			}
+		}
+	}
+	return (toks);
 }

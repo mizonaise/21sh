@@ -6,13 +6,13 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/22 05:57:21 by hastid            #+#    #+#             */
-/*   Updated: 2019/11/27 14:41:55 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/01 03:42:24 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "my_shell.h"
 
-int		built_echo(char **args)
+static int	built_echo(char **args)
 {
 	int i;
 	int check;
@@ -41,31 +41,7 @@ int		built_echo(char **args)
 	return (0);
 }
 
-int		ft_unsetenv(t_env **env, char **args)
-{
-	int		i;
-
-	i = 1;
-	if (args[i])
-	{
-		while (args[i])
-			del_elem(env, args[i++]);
-	}
-	else
-		ft_perror(0, "Too few arguments.", 1);
-	return (0);
-}
-
-int		ft_setenv(t_env **env, char **args)
-{
-	if (args[1])
-		add_elem(env, args[1], args[2]);
-	else
-		ft_putenv(*env);
-	return (0);
-}
-
-int		check_built(char *str)
+int			check_built(char *str)
 {
 	if (!ft_strcmp(str, "cd"))
 		return (1);
@@ -82,7 +58,7 @@ int		check_built(char *str)
 	return (0);
 }
 
-int		execute_built(t_cmdl *cmdl, t_env **env)
+int			execute_built(t_cmdl *cmdl, t_env **env)
 {
 	if (!ft_strcmp(cmdl->excu, "cd"))
 		built_cd(cmdl->args, env);
@@ -97,31 +73,7 @@ int		execute_built(t_cmdl *cmdl, t_env **env)
 	return (0);
 }
 
-int		save_file(t_file **file, int in, int out, int err)
-{
-	if (!((*file) = (t_file *)malloc(sizeof(t_file))))
-		return (1);
-	(*file)->in = dup(in);
-	(*file)->out = dup(out);
-	(*file)->err = dup(err);
-	return (0);
-}
-
-void	free_file(t_file *file)
-{
-	if (file)
-	{
-		dup2(file->in, 0);
-		dup2(file->out, 1);
-		dup2(file->err, 2);
-		close(file->in);
-		close(file->out);
-		close(file->err);
-		ft_memdel((void **)&file);
-	}
-}
-
-int		built_cmd(t_cmdl *cmdl, t_env **env)
+int			built_cmd(t_cmdl *cmdl, t_env **env)
 {
 	t_fd	*lrd;
 	t_file	*fil;
@@ -137,8 +89,8 @@ int		built_cmd(t_cmdl *cmdl, t_env **env)
 			{
 				if (lrd->sec == -1)
 					close(lrd->fir);
-				else
-					dup2(lrd->sec, lrd->fir);
+				else if (dup2(lrd->sec, lrd->fir) == -1)
+					return (ft_perror(0, "duplicate failed.", 0));
 				lrd = lrd->next;
 			}
 		}

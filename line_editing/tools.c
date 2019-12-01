@@ -6,7 +6,7 @@
 /*   By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/31 19:23:41 by llachgar          #+#    #+#             */
-/*   Updated: 2019/11/26 20:47:13 by llachgar         ###   ########.fr       */
+/*   Updated: 2019/12/01 04:18:32 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,19 @@ void		mines(t_point *p, t_cmd *l)
 	}
 }
 
-void		plus(t_point *p, t_cmd *l, int b)
+void		plus(t_point *p, t_cmd *l, int b, int i)
 {
-	if (p->c == l->w.ws_col - 1)
+	if (p->c == l->w.ws_col - 1 || l->chars[i] == '\n')
 	{
 		p->c = 0;
 		if (p->r == (l->w.ws_row - 1))
 		{
 			l->init_p->r--;
-			b ? l->cur_p->r-- : 1 == 1;
 			ft_putstr_fd(DO, 0);
 		}
 		else
 			p->r++;
+		ft_putstr_fd(tgoto(CM, p->c, p->r), 0);
 	}
 	else
 		p->c++;
@@ -82,6 +82,5 @@ void		add_at(t_cmd *l)
 	}
 	l->len++;
 	l->cur++;
-	plus(l->cur_p, l, 0);
 	l->chars[l->len] = '\0';
 }
