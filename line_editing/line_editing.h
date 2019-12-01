@@ -6,7 +6,7 @@
 /*   By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/16 14:46:01 by llachgar          #+#    #+#             */
-/*   Updated: 2019/12/01 01:18:29 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/01 07:09:52 by llachgar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@
 # define CTL_F 6
 # define CTL_D 4
 # define CTL_B 2
+# define CTL_L 12
 # define COLS (tgetnum("co"))
 # define ROWS (tgetnum("li"))
 # define SO (tgetstr("so", NULL))
@@ -147,19 +148,18 @@ void				bottom_k(t_cmd *l);
 void				ctl_right(t_cmd *l);
 void				alt_x_k(t_cmd *l);
 void				ctl_d(t_cmd *l);
+void				ctl_l(t_cmd *l);
 void				init_term(void);
 t_cmd				*init_cmd(char *prompt);
 char				*read_line(char *prompt);
-void				plus(t_point *p, t_cmd *l, int b, int i);
+void				plus(t_point *p, t_cmd *l, t_point *p1, int i);
 void				mines(t_point *p, t_cmd *l);
 void				get_cur_pos(t_point *t);
 void				init_history();
 void				add_to_hist(char *cmd);
 void				default_term_mode(void);
-
 int					f_l(int a, int b, int first);
 int					change_spaces(char *str);
-
 t_hist				*save_hist(t_hist *hist);
 t_cmd				*keep_l(t_cmd *l, int cmd);
 void				free_out(t_cmd *l);
@@ -167,4 +167,5 @@ void				print_cmd(t_cmd *l);
 void				go_to_the_end(t_cmd *l);
 void				free_history(void);
 void				swap_p(t_point	*p1, t_point	*p2, int a);
+void				excute_key(t_key	keys[18], t_cmd *l);
 #endif
