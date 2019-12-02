@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/01 03:31:09 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/01 03:36:57 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/02 03:54:54 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ int				execute_p(int inp, int pi[2], t_env **env, t_pipe *pipes)
 	}
 	if (inp)
 		close(inp);
-	close(pi[1]);
+	if (pipes->next)
+		close(pi[1]);
 	return (0);
 }
