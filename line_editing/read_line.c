@@ -6,7 +6,7 @@
 /*   By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 13:13:47 by llachgar          #+#    #+#             */
-/*   Updated: 2019/12/01 07:08:26 by llachgar         ###   ########.fr       */
+/*   Updated: 2019/12/02 04:08:45 by llachgar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,32 +48,32 @@ void		print_cmd(t_cmd *l)
 
 	i = -1;
 	l->cur_p->r = l->init_p->r - 1;
-	l->cur_p->c = ft_strlen(l->prompt);
-	ft_putstr_fd(tgoto(CM, 0, l->init_p->r - 1), 0);
-	ft_putstr_fd(CD, 0);
-	ft_putstr_fd(l->prompt, 0);
+	l->cur_p->c = ft_strlen(l->prompt) + 5;
+	ft_putstr_fd(tgoto(CM, 0, l->init_p->r - 1), 1);
+	ft_putstr_fd(CD, 1);
+	show_prompt(l);
 	while (++i < l->len)
 	{
 		if (i == l->cur)
 			swap_p(&p, l->cur_p, 1);
 		if (i == (l->cur - l->s_sp) && l->is_s)
-			ft_putstr_fd(SO, 0);
+			ft_putstr_fd(SO, 1);
 		if (i == l->cur && l->is_s)
-			ft_putstr_fd(SE, 0);
+			ft_putstr_fd(SE, 1);
 		if (l->chars[i] != '\n')
-			ft_putchar_fd(l->chars[i], 0);
+			ft_putchar_fd(l->chars[i], 1);
 		plus(l->cur_p, l, &p, i);
 	}
 	if (l->cur != l->len)
 		swap_p(&p, l->cur_p, 0);
-	ft_putstr_fd(tgoto(CM, l->cur_p->c, l->cur_p->r), 0);
-	ft_putstr_fd(SE, 0);
+	ft_putstr_fd(tgoto(CM, l->cur_p->c, l->cur_p->r), 1);
+	ft_putstr_fd(SE, 1);
 }
 
 void		match_key(t_cmd *l)
 {
 	int				i;
-	static t_key	keys[18] = {
+	static t_key	keys[19] = {
 		{RIGHT_K, &right_key},
 		{LEFT_K, &left_key},
 		{BACK_K, &delete},
@@ -91,7 +91,8 @@ void		match_key(t_cmd *l)
 		{ALT_X_K, &alt_x_k},
 		{TOP_K, &top_k},
 		{BOTTOM_K, &bottom_k},
-		{CTL_L, &ctl_l}
+		{CTL_L, &ctl_l},
+		{ALT_A, &alt_a}
 	};
 
 	excute_key(keys, l);

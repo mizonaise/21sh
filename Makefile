@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hastid <marvin@42.fr>                      +#+  +:+       +#+         #
+#    By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/12/01 20:14:35 by hastid            #+#    #+#              #
-#    Updated: 2019/12/01 20:14:39 by hastid           ###   ########.fr        #
+#    Created: 2019/10/13 18:30:14 by hastid            #+#    #+#              #
+#    Updated: 2019/12/04 01:00:37 by hastid           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRC = src/main.c \
 	  src/sh_split.c \
 	  src/sh_token.c \
 	  src/sh_error.c \
+	  src/sh_etoil.c \
 	  src/sh_envlist.c \
 	  src/sh_environ.c \
 	  src/sh_cmdline.c \
