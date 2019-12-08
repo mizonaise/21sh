@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 23:08:10 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/04 03:32:02 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/07 23:01:48 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,12 @@ int			check_save(t_tok **toks, char *line)
 	check = 0;
 	if (check_token(line))
 		check = 1;
-	while (line[i] && !check_spechar(line[i]))
+	while (line[i])
+	{
+		if (check && check_spechar(line[i]))
+			break ;
 		i++;
+	}
 	if (i > 0)
 	{
 		if (!(temp = ft_strsub(line, 0, i)))
