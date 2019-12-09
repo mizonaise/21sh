@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 23:07:53 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/09 03:53:11 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/09 22:27:35 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,29 +22,24 @@ static int	check_valarg(char c)
 static char	*edit_tilda(char *str, t_env *env)
 {
 	int		i;
-	char	*tp;
-	char	*ret;
+	char	*tmp;
 
-	str++;
-	ret = 0;
-	if (check_valarg(*str))
+	i = 1;
+	if (!str[i] || str[i] == '/')
 	{
-		i = 0;
-		while (str[i] && check_valarg(str[i]))
-			i++;
-		if ((ret = ft_strsub(str, 0, i)))
-			if ((tp = ft_strjoin("/Users/", ret)))
-			{
-				ft_memdel((void **)&ret);
-				ret = ft_strjoin(tp, str + i);
-				ft_memdel((void **)&tp);
-			}
+		if (!(tmp = ft_getenv(env, "HOME")))
+		{
+			ft_perror(0, "HOME: not exists", 1);
+			return (0);
+		}
+		return (ft_strjoin(tmp, str + 1));
 	}
-	else if ((tp = ft_getenv(env, "HOME")))
-		ret = ft_strjoin(tp, str);
-	if (!ret)
-		ft_perror(0, "HOME: not exists", 1);
-	return (ret);
+	if (!(tmp = ft_strjoin("/Users/", str + 1)))
+		return (0);
+	if (!access(tmp, F_OK))
+		return (tmp);
+	ft_memdel((void **)&tmp);
+	return (ft_strdup(str));
 }
 
 static char	*edit_dollar(char *str, t_env *env)
