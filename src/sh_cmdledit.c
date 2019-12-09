@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 23:07:53 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/10 00:12:30 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/10 00:54:24 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ char		*parse_line(char *tmp, t_env *env)
 				if (tmp[be] == 34 && tmp[i] == '$' && check_valarg(tmp[i + 1]))
 					if (!(tmp = join_line(tmp, i, env, 1)))
 						return (0);
+			i++;
 		}
 		else
 			i++;
