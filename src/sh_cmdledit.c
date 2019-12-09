@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 23:07:53 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/09 22:27:35 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/10 00:12:30 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ char		*parse_line(char *tmp, t_env *env)
 	i = 0;
 	while (tmp && tmp[i])
 	{
-		if (tmp[i] == '~')
+		if (tmp[i] == '~' && (i == 0 || check_space(tmp[i - 1])))
 			if (!(tmp = join_line(tmp, i, env, 0)))
 				return (0);
 		if (tmp[i] == '$' && check_valarg(tmp[i + 1]))
