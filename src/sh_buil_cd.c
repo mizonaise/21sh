@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/23 16:29:59 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/08 23:29:59 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/10 02:08:15 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,20 @@ int			built_cd(char **args, t_env **env)
 
 	if (args[1])
 	{
-		dir = args[1];
 		if (!ft_strcmp("-", args[1]))
-			if (!(dir = ft_getenv(*env, "OLDPWD")))
+		{
+			if (!(dir = ft_strdup(ft_getenv(*env, "OLDPWD"))))
 				return (ft_perror("env", ": Oldpwd not exists", 1));
+		}
+		else if (!(dir = ft_strdup(args[1])))
+			return (1);
 		if (isdir(dir))
 			change_dir(dir, env);
 		else if (!access(dir, F_OK))
 			ft_perror(dir, ": Not a directory", 1);
 		else
 			ft_perror(dir, ": No such file or directory", 1);
+		ft_memdel((void **)&dir);
 	}
 	else if ((dir = ft_getenv(*env, "HOME")))
 		change_dir(dir, env);
