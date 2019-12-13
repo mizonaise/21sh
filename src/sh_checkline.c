@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 18:04:31 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/13 05:09:19 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/13 06:01:41 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,13 +88,18 @@ static int		check_aller(char *str)
 	return (check_allerr(str));
 }
 
-char			*aff_prompt(char *str)
+char			*aff_prompt(t_env *env)
 {
 	int		ret;
+	char	*pro;
 	char	*cmdl;
 	char	*temp;
 
-	cmdl = read_line(str);
+	pro = ft_getenv(env, "PWD");
+	if (!(pro = pro ? ft_strdup(pro) : getcwd(0, 0)))
+		pro = ft_strdup("21sh");
+	cmdl = read_line(pro);
+	ft_memdel((void **)&pro);
 	if (!cmdl)
 		return (0);
 	ret = check_aller(cmdl);

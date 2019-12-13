@@ -6,7 +6,7 @@
 /*   By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:33:26 by llachgar          #+#    #+#             */
-/*   Updated: 2019/12/02 03:36:04 by llachgar         ###   ########.fr       */
+/*   Updated: 2019/12/13 05:57:33 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,7 @@ t_cmd			*init_cmd(char *pr)
 	l = malloc_cmd();
 	if (l == NULL || l->init_p == NULL || l->cur_p == NULL)
 		return (NULL);
-	if (getcwd(l->prompt, sizeof(l->prompt)) == NULL || !ft_strcmp(pr, ">"))
-		ft_strcpy(l->prompt, pr);
+	ft_strcpy(l->prompt, pr);
 	show_prompt(l);
 	get_cur_pos(l->init_p);
 	get_cur_pos(l->cur_p);
