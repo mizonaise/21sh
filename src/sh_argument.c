@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 03:45:13 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/13 06:34:25 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/13 21:40:13 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static char	*check_path(char *str, char **path)
 	char	*tmp;
 
 	i = 0;
-	if (!ft_strcmp(str, ".") && !ft_strcmp(str, ".."))
+	if (ft_strcmp(str, ".") && ft_strcmp(str, ".."))
 		while (path && path[i])
 		{
 			if (!(tp = ft_strjoin(path[i], "/")))
