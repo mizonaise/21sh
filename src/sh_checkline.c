@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 18:04:31 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/13 02:55:39 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/13 05:09:19 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,29 @@ int				check_spacestr(char *str)
 	return (1);
 }
 
+static int		check_allerr(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (check_spechar(str[i]))
+		{
+			while (check_spechar(str[i]))
+				i++;
+			while (check_space(str[i]))
+				i++;
+			while (ft_isdigit(str[i]))
+				i++;
+			if (check_spechar(str[i]))
+				return (ft_perror(0, "syntax error near unexpected token", -1));
+		}
+		i++;
+	}
+	return (check_errline(str));
+}
+
 static int		check_aller(char *str)
 {
 	int	i;
@@ -49,7 +72,7 @@ static int		check_aller(char *str)
 
 	i = 0;
 	if (str[i] == '|')
-		return (ft_perror(0, "syntax error near unexpected token", 0));
+		return (ft_perror(0, "syntax error near unexpected token", -1));
 	while (str[i])
 	{
 		check = 0;
@@ -59,10 +82,10 @@ static int		check_aller(char *str)
 			i++;
 		}
 		if (check && str[i] == '|')
-			return (ft_perror(0, "syntax error near unexpected token", 0));
+			return (ft_perror(0, "syntax error near unexpected token", -1));
 		i++;
 	}
-	return (check_errline(str));
+	return (check_allerr(str));
 }
 
 char			*aff_prompt(char *str)
