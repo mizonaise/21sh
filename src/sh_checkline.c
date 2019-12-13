@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 18:04:31 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/03 01:29:17 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/13 02:55:39 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,29 @@ int				check_spacestr(char *str)
 	return (1);
 }
 
+static int		check_aller(char *str)
+{
+	int	i;
+	int	check;
+
+	i = 0;
+	if (str[i] == '|')
+		return (ft_perror(0, "syntax error near unexpected token", 0));
+	while (str[i])
+	{
+		check = 0;
+		while (str[i] && (check_space(str[i]) || str[i] == ';'))
+		{
+			check = 1;
+			i++;
+		}
+		if (check && str[i] == '|')
+			return (ft_perror(0, "syntax error near unexpected token", 0));
+		i++;
+	}
+	return (check_errline(str));
+}
+
 char			*aff_prompt(char *str)
 {
 	int		ret;
@@ -51,7 +74,7 @@ char			*aff_prompt(char *str)
 	cmdl = read_line(str);
 	if (!cmdl)
 		return (0);
-	ret = check_errline(cmdl);
+	ret = check_aller(cmdl);
 	while (ret == 1 || ret == 2)
 	{
 		if ((temp = read_line(">")))
@@ -59,7 +82,7 @@ char			*aff_prompt(char *str)
 			if (ret == 2)
 				cmdl = ft_strjoin_f(cmdl, "\n", 1, 0);
 			cmdl = ft_strjoin_f(cmdl, temp, 1, 1);
-			ret = check_errline(cmdl);
+			ret = check_aller(cmdl);
 		}
 		else
 			ret = ft_perror(0, "syntax error: unexpected end of file", -1);
