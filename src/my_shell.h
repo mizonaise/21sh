@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/30 23:08:36 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/05 19:47:35 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/13 02:29:18 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ char			*ft_getenv(t_env *env, char *name);
 
 int				isdir(char *path);
 t_fd			*add_secredi(int fir, int sec);
+char			*path_of_link(char *dir, char *pwd);
 
 int				ft_perror(char *s, char *str, int ret);
 char			*parse_line(char *tmp, t_env *env);

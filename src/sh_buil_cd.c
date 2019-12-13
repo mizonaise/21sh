@@ -6,7 +6,7 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/23 16:29:59 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/10 02:08:15 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/13 02:29:45 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,24 @@
 
 static int	change_dir(char *dir, t_env **env)
 {
+	char	*tp;
 	char	*pwd;
 
-	if ((pwd = getcwd(0, 0)))
+	if ((tp = ft_getenv(*env, "PWD")))
 	{
-		add_elem(env, "OLDPWD", pwd);
-		ft_memdel((void **)&pwd);
+		if (!(pwd = ft_strdup(tp)))
+			return (0);
 	}
-	else if ((pwd = ft_getenv(*env, "PWD")))
-		add_elem(env, "OLDPWD", pwd);
-	chdir(dir);
-	if ((pwd = getcwd(0, 0)))
+	else if (!(pwd = getcwd(0, 0)))
+		return (0);
+	if ((tp = path_of_link(dir, pwd)))
 	{
-		add_elem(env, "PWD", pwd);
-		ft_memdel((void **)&pwd);
+		chdir(tp);
+		add_elem(env, "OLDPWD", pwd);
+		add_elem(env, "PWD", tp);
+		ft_memdel((void **)&tp);
 	}
+	ft_memdel((void **)&pwd);
 	return (0);
 }
 
