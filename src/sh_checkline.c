@@ -6,13 +6,13 @@
 /*   By: hastid <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/28 18:04:31 by hastid            #+#    #+#             */
-/*   Updated: 2019/12/13 06:01:41 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/14 06:27:07 by hastid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "my_shell.h"
 
-static char		*ft_strjoin_f(char *s1, char *s2, int a, int b)
+char			*ft_strjoin_f(char *s1, char *s2, int a, int b)
 {
 	char	*str;
 	int		len;
@@ -71,19 +71,21 @@ static int		check_aller(char *str)
 	int	check;
 
 	i = 0;
-	if (str[i] == '|')
+	if (str[0] == '|')
 		return (ft_perror(0, "syntax error near unexpected token", -1));
 	while (str[i])
 	{
 		check = 0;
-		while (str[i] && (check_space(str[i]) || str[i] == ';'))
+		if (str[i] == ';')
 		{
-			check = 1;
 			i++;
+			while (str[i] && check_space(str[i]))
+				i++;
+			if (str[i] == '|')
+				return (ft_perror(0, "syntax error near unexpected token", -1));
 		}
-		if (check && str[i] == '|')
-			return (ft_perror(0, "syntax error near unexpected token", -1));
-		i++;
+		else
+			i++;
 	}
 	return (check_allerr(str));
 }
@@ -91,15 +93,10 @@ static int		check_aller(char *str)
 char			*aff_prompt(t_env *env)
 {
 	int		ret;
-	char	*pro;
 	char	*cmdl;
 	char	*temp;
 
-	pro = ft_getenv(env, "PWD");
-	if (!(pro = pro ? ft_strdup(pro) : getcwd(0, 0)))
-		pro = ft_strdup("21sh");
-	cmdl = read_line(pro);
-	ft_memdel((void **)&pro);
+	cmdl = prompt(env);
 	if (!cmdl)
 		return (0);
 	ret = check_aller(cmdl);

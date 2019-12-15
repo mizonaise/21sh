@@ -6,7 +6,7 @@
 /*   By: llachgar <llachgar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/19 18:33:26 by llachgar          #+#    #+#             */
-/*   Updated: 2019/12/13 05:57:33 by hastid           ###   ########.fr       */
+/*   Updated: 2019/12/14 19:43:51 by llachgar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ t_cmd			*init_cmd(char *pr)
 	if (l == NULL || l->init_p == NULL || l->cur_p == NULL)
 		return (NULL);
 	ft_strcpy(l->prompt, pr);
-	show_prompt(l);
-	get_cur_pos(l->init_p);
 	get_cur_pos(l->cur_p);
+	get_cur_pos(l->init_p);
+	show_prompt(l);
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &(l->w));
 	l->len = 0;
 	l->b_p = 0;
